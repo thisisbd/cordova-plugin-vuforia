@@ -11,6 +11,10 @@ Cordova-Plugin-Vuforia is a [Cordova][cordova] plugin that uses [Vuforia][vufori
 - Image recognition using reliable [Vuforia][vuforia] library
 - Comprehensive setup instructions
 
+## Requirements
+Cordova-Plugin-Vuforia requires the following:
+* [NPM][npm]
+* [Cordova][cordova] (currently 5.x - see issue [#4][issue-4] r.e Cordova 6 support)
 
 ## Supported Platforms
 - Android
@@ -132,11 +136,6 @@ Within `Classes>AppDeligate.m` scroll to the bottom and remove the references to
 
 **NOTE:** The above example assumes you are looking for a fixed *LANDSCAPE* orientation. You will need to update the above with portrait values if you need portrait.
 
-## Requirements
-Cordova-Plugin-Vuforia requires the following:
-* [NPM][npm]
-* [Cordova][cordova]
-
 
 ## Contributing
 If you wish to submit a bug fix or feature, you can create a pull request and it will be merged pending a code review.
@@ -163,6 +162,7 @@ Cordova-Plugin-Vuforia is licensed under the [MIT License][info-license].
 [vuforia]: https://www.vuforia.com/
 [npm]: https://www.npmjs.com
 [peugeot]: https://itunes.apple.com/gb/app/new-peugeot-208/id1020630968?mt=8
+[issue-4]: https://github.com/thisisbd/cordova-plugin-vuforia/issues/4
 
 [info-npm]: https://www.npmjs.com/package/cordova-plugin-vuforia
 [info-travis]: https://travis-ci.org/thisisbd/cordova-plugin-vuforia
