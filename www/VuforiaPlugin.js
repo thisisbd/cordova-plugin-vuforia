@@ -4,7 +4,7 @@ var VuforiaPlugin = {
     var imageTargets = options.targetList;
     var overlayCopy = options.overlayMessage;
     var vuforiaLicense = options.vuforiaLicense;
-    var showAndroidCloseButton = options.showAndroidCloseButton;
+    var showAndroidCloseButton = options.showAndroidCloseButton?true:false;
 
     cordova.exec(
 
