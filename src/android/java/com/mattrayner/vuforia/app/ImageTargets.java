@@ -697,4 +697,8 @@ public class ImageTargets extends Activity implements ApplicationControl
         setResult(6, mIntent);
         super.onBackPressed();
     }
+
+    public void handleCloseButton(View view){
+        onBackPressed();
+    }
 }
