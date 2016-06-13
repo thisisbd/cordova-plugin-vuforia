@@ -1,5 +1,5 @@
 # ![Cordova-Plugin-Vuforia][logo]
-Cordova-Plugin-Vuforia is a [Cordova][cordova] plugin that uses [Vuforia][vuforia] to perform image recognition. 
+Cordova-Plugin-Vuforia is a [Cordova][cordova] plugin that uses [Vuforia][vuforia] to perform image recognition.
 
 You can see a live example in the [Peugeot 208][peugeot] app on iOS and Android and a basic open source example in the [cordova-vuforia-example][example-repo] repo.
 
@@ -22,7 +22,7 @@ Cordova-Plugin-Vuforia requires the following:
   * If you've already got a project running with an older version of Cordova (e.g. 4 or 5), [see here][updating-cordova] how to update your project's Cordova version.
   * Or if you want to upgrade to the latest version on a platform-by-platform basis, see either [upgrading to cordova-ios 4][upgrading-ios] or [upgrading to cordova-android 5][upgrading-android].
 
-**NOTE:** You will require an Android or iOS device. Cordova-Plugin-Vuforia requires hardware and software support that is not present in either the iOS or Android simulators. 
+**NOTE:** You will require an Android or iOS device. Cordova-Plugin-Vuforia requires hardware and software support that is not present in either the iOS or Android simulators.
 
 
 ## Getting Started
@@ -34,11 +34,15 @@ cordova plugin add cordova-plugin-vuforia
 #### Javascript example
 From within your Javascript file, add the following to launch the [Vuforia][vuforia] plugin.
 ```javascript
+var options = {
+  databaseXmlFile: 'PluginTest.xml',
+  targetList: [ 'logo', 'iceland', 'canterbury-grass', 'brick-lane' ],
+  overlayMessage: 'Point your camera at a test image...',
+  vuforiaLicense: 'YOUR_VUFORIA_KEY'
+};
+
 navigator.VuforiaPlugin.startVuforia(
-  'PluginTest.xml',
-  [ 'logo', 'iceland', 'canterbury-grass', 'brick-lane' ],
-  'Point your camera at a test image...',
-  'YOUR_VUFORIA_KEY',
+  options,
   function(data){
     console.log(data);
     alert("Image found: "+data.imageName);
@@ -49,7 +53,7 @@ navigator.VuforiaPlugin.startVuforia(
 );
 ```
 
-**NOTES**: 
+**NOTES**:
 * You will need to replace `YOUR_VUFORIA_KEY` with a valid license key for the plugin to launch correctly.
 * For testing you can use the `targets/PluginTest_Targets.pdf` file inside the plugin folder; it contains all four testing targets.
 
@@ -77,7 +81,7 @@ Add the following to your `config.xml` file:
 </platform>
 ```
 
-**NOTE:** 
+**NOTE:**
 * File paths can be either from the **resources folder** (which is the default) or **absolute** (in which case you'd start the `src` with `file://`). Absolute paths are useful if you'd like to access files in specific folders, like the iTunes sharing document folder for iOS, or the app root folder for Android.
 
 
