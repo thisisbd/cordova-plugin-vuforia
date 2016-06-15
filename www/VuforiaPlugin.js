@@ -1,5 +1,10 @@
 var VuforiaPlugin = {
-  startVuforia: function(imageFile ,imageTargets, overlayCopy, vuforiaLicense, imageFoundCallback, errorCallback){
+  startVuforia: function(options, imageFoundCallback, errorCallback){
+    var imageFile = options.databaseXmlFile;
+    var imageTargets = options.targetList;
+    var overlayCopy = options.overlayMessage;
+    var vuforiaLicense = options.vuforiaLicense;
+    var showAndroidCloseButton = options.showAndroidCloseButton?true:false;
 
     cordova.exec(
 
@@ -18,7 +23,7 @@ var VuforiaPlugin = {
       // Execute this method on the above class
       'cordovaStartVuforia',
       // An array containing one String.
-      [ imageFile , imageTargets, overlayCopy, vuforiaLicense ]
+      [ imageFile , imageTargets, overlayCopy, vuforiaLicense, showAndroidCloseButton ]
     );
   },
 

@@ -57,6 +57,7 @@ public class VuforiaPlugin extends CordovaPlugin {
             String targets = args.getJSONArray(1).toString();
             String overlayText = args.getString(2);
             String vuforiaLicense = args.getString(3);
+            Boolean closeButton = args.getBoolean(4);
 
             Log.d(LOGTAG, "Args: "+args);
             Log.d(LOGTAG, "Text: "+overlayText);
@@ -71,6 +72,7 @@ public class VuforiaPlugin extends CordovaPlugin {
             intent.putExtra("IMAGE_TARGETS", targets);
             intent.putExtra("OVERLAY_TEXT", overlayText);
             intent.putExtra("LICENSE_KEY", vuforiaLicense);
+            intent.putExtra("DISPLAY_CLOSE_BUTTON", closeButton);
 
             if(cordova.hasPermission(CAMERA)) {
                 // Launch a new activity with Vuforia in it. Expect it to return a result.

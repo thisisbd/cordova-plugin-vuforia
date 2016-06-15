@@ -36,6 +36,7 @@ import android.widget.CheckBox;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Button;
 import android.widget.Toast;
 //import android.R;
 //import com.example.hello.R;
@@ -106,6 +107,9 @@ public class ImageTargets extends Activity implements ApplicationControl
     // Overlay message string
     String mOverlayMessage;
 
+    // Display button boolean
+    Boolean mDisplayCloseButton;
+
     // Vuforia license key
     String mLicenseKey;
 
@@ -158,6 +162,7 @@ public class ImageTargets extends Activity implements ApplicationControl
         String target_file = intent.getStringExtra("IMAGE_TARGET_FILE");
         mTargets = intent.getStringExtra("IMAGE_TARGETS");
         mOverlayMessage = intent.getStringExtra("OVERLAY_TEXT");
+        mDisplayCloseButton = intent.getBooleanExtra("DISPLAY_CLOSE_BUTTON", true);
 
         startLoadingAnimation();
 
@@ -381,6 +386,11 @@ public class ImageTargets extends Activity implements ApplicationControl
         TextView overlayText = (TextView) mUILayout.findViewById(resources.getIdentifier("overlay_message", "id", package_name));
 
         Log.d(LOGTAG, "Overlay Text: "+mOverlayMessage);
+
+        // Hide the close button if needed
+        Button closeButton = (Button) mUILayout.findViewById(resources.getIdentifier("close_button", "id", package_name));
+        if(!mDisplayCloseButton)
+            closeButton.setVisibility(View.GONE);
 
         // Updates the overlay message with the text passed-in
         overlayText.setText( mOverlayMessage );
@@ -689,5 +699,9 @@ public class ImageTargets extends Activity implements ApplicationControl
         mIntent.putExtra("name", "CLOSED");
         setResult(6, mIntent);
         super.onBackPressed();
+    }
+
+    public void handleCloseButton(View view){
+        onBackPressed();
     }
 }

@@ -3,7 +3,7 @@
     android:id="@+id/camera_overlay_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
-    
+
     <ProgressBar
     style="@android:style/Widget.ProgressBar"
     android:id="@+id/loading_indicator"
@@ -11,7 +11,7 @@
     android:layout_height="wrap_content"
     android:layout_centerHorizontal="true"
     android:layout_centerVertical="true" />
-    
+
     <TextView
     android:layout_width="300dp"
     android:layout_height="wrap_content"
@@ -32,7 +32,7 @@
     android:paddingBottom="10dp"
     android:autoText="false"
     android:background="#cc000000" />
-    
+
     <ImageView
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -48,5 +48,18 @@
     android:layout_marginRight="5dp"
     android:layout_marginTop="5dp"
     android:layout_marginBottom="5dp" />
-    
+
+
+
+    <Button
+    android:layout_width="48dp"
+    android:layout_height="48dp"
+    android:id="@+id/close_button"
+    android:layout_alignParentTop="true"
+    android:layout_alignParentRight="true"
+    android:background="@drawable/closebutton"
+    android:layout_marginRight="20dp"
+    android:layout_marginTop="20dp"
+    android:onClick="handleCloseButton" />
+
 </RelativeLayout>
