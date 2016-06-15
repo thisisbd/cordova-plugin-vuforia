@@ -1,5 +1,9 @@
 var VuforiaPlugin = {
-  startVuforia: function(imageFile ,imageTargets, overlayCopy, vuforiaLicense, imageFoundCallback, errorCallback){
+  startVuforia: function(options, imageFoundCallback, errorCallback){
+    var imageFile = options.databaseXmlFile;
+    var imageTargets = options.targetList;
+    var overlayCopy = options.overlayMessage;
+    var vuforiaLicense = options.vuforiaLicense;
 
     cordova.exec(
 
