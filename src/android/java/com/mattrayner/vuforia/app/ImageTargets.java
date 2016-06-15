@@ -390,12 +390,12 @@ public class ImageTargets extends Activity implements ApplicationControl
             .sendEmptyMessage(LoadingDialogHandler.SHOW_LOADING_DIALOG);
 
         // Gets a reference to the overlay text
-        TextView overlayText = (TextView) mUILayout.findViewById(resources.getIdentifier("overlay_message", "id", package_name));
+        TextView overlayText = (TextView) mUILayout.findViewById(resources.getIdentifier("overlay_message_top", "id", package_name));
 
         Log.d(LOGTAG, "Overlay Text: "+mOverlayMessage);
 
         // Hide the close button if needed
-        Button closeButton = (Button) mUILayout.findViewById(resources.getIdentifier("close_button", "id", package_name));
+        Button closeButton = (Button) mUILayout.findViewById(resources.getIdentifier("close_button_top", "id", package_name));
         if(!mDisplayCloseButton)
             closeButton.setVisibility(View.GONE);
 
