@@ -29,13 +29,13 @@
 
 @implementation ImageTargetsViewController
 
-- (id)initWithOverlayText:(NSString *)overlayText vuforiaLicenseKey:(NSString *)vuforiaLicenseKey
+- (id)initWithOverlayOptions:(NSDictionary *)overlayOptions vuforiaLicenseKey:(NSString *)vuforiaLicenseKey
 {
     NSLog(@"Vuforia Plugin :: INIT IMAGE TARGETS VIEW CONTROLLER");
-    NSLog(@"Vuforia Plugin :: OVERLAY: %@", overlayText);
+    NSLog(@"Vuforia Plugin :: OVERLAY: %@", overlayOptions);
     NSLog(@"Vuforia Plugin :: LICENSE: %@", vuforiaLicenseKey);
 
-    self.overlayText = overlayText;
+    self.overlayOptions = overlayOptions;
     self.vuforiaLicenseKey = vuforiaLicenseKey;
 
     self = [self initWithNibName:nil bundle:nil];
@@ -86,6 +86,9 @@
          name:UIApplicationDidBecomeActiveNotification
          object:nil];
 
+        NSString *overlayText = [self.overlayOptions objectForKey:@"overlayText"];
+        bool showDevicesIcon = [[self.overlayOptions objectForKey:@"showDevicesIcon"] integerValue];
+
          UIView *vuforiaBarView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 50)];
          vuforiaBarView.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.5f];
          [self.view addSubview:vuforiaBarView];
@@ -108,9 +111,10 @@
         [detailLabel setBackgroundColor:[UIColor clearColor]];
         [detailLabel setFont:[UIFont fontWithName: @"Trebuchet MS" size: 16.0f]];
 
-        NSLog(@"Vuforia Plugin :: overlayText: %@", self.overlayText);
+        NSLog(@"Vuforia Plugin :: overlayText: %@", overlayText);
+        NSLog(@"Vuforia Plugin :: showDevicesIcon: %s", showDevicesIcon ? "true" : "false");
 
-        [detailLabel setText: self.overlayText];
+        [detailLabel setText: overlayText];
 
         detailLabel.lineBreakMode = NSLineBreakByWordWrapping;
         detailLabel.numberOfLines = 0;
@@ -135,11 +139,12 @@
 
         [vuforiaBarView addSubview:detailLabel];
 
-        // Display the devices icon. Need to be optional.
-        // UIImage *image = [UIImage imageNamed:@"iOSDevices.png"];
-        // UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
-        // imageView.frame = CGRectMake(0, 0, 50, 50);
-        // [vuforiaBarView addSubview:imageView];
+        if(showDevicesIcon){
+            UIImage *image = [UIImage imageNamed:@"iOSDevices.png"];
+            UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
+            imageView.frame = CGRectMake(0, 0, 50, 50);
+            [vuforiaBarView addSubview:imageView];
+        }
     }
     return self;
 }
