@@ -5,6 +5,7 @@ var VuforiaPlugin = {
     var overlayCopy = options.overlayMessage;
     var vuforiaLicense = options.vuforiaLicense;
     var showAndroidCloseButton = options.showAndroidCloseButton?true:false;
+    var devicesIconVisible = options.devicesIconVisible ? true : false;
 
     cordova.exec(
 
@@ -23,7 +24,7 @@ var VuforiaPlugin = {
       // Execute this method on the above class
       'cordovaStartVuforia',
       // An array containing one String.
-      [ imageFile , imageTargets, overlayCopy, vuforiaLicense, showAndroidCloseButton ]
+      [ imageFile , imageTargets, overlayCopy, vuforiaLicense, showAndroidCloseButton, devicesIconVisible ]
     );
   },
 

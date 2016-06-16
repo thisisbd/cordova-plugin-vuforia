@@ -36,6 +36,7 @@ import android.widget.CheckBox;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.ImageView;
 import android.widget.Button;
 import android.widget.Toast;
 //import android.R;
@@ -110,6 +111,9 @@ public class ImageTargets extends Activity implements ApplicationControl
     // Display button boolean
     Boolean mDisplayCloseButton;
 
+    // Display devices icon image
+    Boolean mDisplayDevicesIcon;
+
     // Vuforia license key
     String mLicenseKey;
 
@@ -170,6 +174,7 @@ public class ImageTargets extends Activity implements ApplicationControl
         mTargets = intent.getStringExtra("IMAGE_TARGETS");
         mOverlayMessage = intent.getStringExtra("OVERLAY_TEXT");
         mDisplayCloseButton = intent.getBooleanExtra("DISPLAY_CLOSE_BUTTON", true);
+        mDisplayDevicesIcon = intent.getBooleanExtra("DISPLAY_DEVICES_ICON", true);
 
         startLoadingAnimation();
 
@@ -399,6 +404,10 @@ public class ImageTargets extends Activity implements ApplicationControl
         if(!mDisplayCloseButton)
             closeButton.setVisibility(View.GONE);
 
+        ImageView devicesIconImage = (ImageView) mUILayout.findViewById(resources.getIdentifier("devices_icon_top", "id", package_name));
+
+        if(!mDisplayDevicesIcon)
+            devicesIconImage.setVisibility(View.GONE);
         // Updates the overlay message with the text passed-in
         overlayText.setText( mOverlayMessage );
 
