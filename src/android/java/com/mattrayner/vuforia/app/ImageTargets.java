@@ -135,13 +135,6 @@ public class ImageTargets extends Activity implements ApplicationControl
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
-        // if (vuforiaActionReceiver == null){
-        //     vuforiaActionReceiver = new ActionReceiver();
-        //     IntentFilter intentFilter = new IntentFilter(VuforiaPlugin.PLUGIN_ACTION);
-        //     registerReceiver(vuforiaActionReceiver, intentFilter);
-        // }
-
-
         Log.d(LOGTAG, "onCreate");
         super.onCreate(savedInstanceState);
 
@@ -231,8 +224,10 @@ public class ImageTargets extends Activity implements ApplicationControl
     @Override
     protected void onStart()
     {
-        if (vuforiaActionReceiver == null)
+        if (vuforiaActionReceiver == null) {
             vuforiaActionReceiver = new ActionReceiver();
+        }
+
         IntentFilter intentFilter = new IntentFilter(VuforiaPlugin.PLUGIN_ACTION);
         registerReceiver(vuforiaActionReceiver, intentFilter);
 
@@ -243,9 +238,9 @@ public class ImageTargets extends Activity implements ApplicationControl
     @Override
     protected void onStop()
     {
-        if (vuforiaActionReceiver != null)
-			unregisterReceiver(vuforiaActionReceiver);
-
+        if (vuforiaActionReceiver != null) {
+            unregisterReceiver(vuforiaActionReceiver);
+        }
         Log.d(LOGTAG, "onStop");
         super.onStop();
 
@@ -255,8 +250,6 @@ public class ImageTargets extends Activity implements ApplicationControl
     @Override
     protected void onResume()
     {
-
-
         Log.d(LOGTAG, "onResume");
         super.onResume();
 
