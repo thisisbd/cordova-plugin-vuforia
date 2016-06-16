@@ -135,10 +135,11 @@
 
         [vuforiaBarView addSubview:detailLabel];
 
-        UIImage *image = [UIImage imageNamed:@"iOSDevices.png"];
-        UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
-        imageView.frame = CGRectMake(0, 0, 50, 50);
-        [vuforiaBarView addSubview:imageView];
+        // Display the devices icon. Need to be optional.
+        // UIImage *image = [UIImage imageNamed:@"iOSDevices.png"];
+        // UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
+        // imageView.frame = CGRectMake(0, 0, 50, 50);
+        // [vuforiaBarView addSubview:imageView];
     }
     return self;
 }
