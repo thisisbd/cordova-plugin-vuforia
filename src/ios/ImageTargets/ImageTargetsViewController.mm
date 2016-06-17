@@ -151,7 +151,7 @@
     NSLog(@"Vuforia Plugin :: button pressed!!!");
     NSDictionary* userInfo = @{@"imageName": @"none"};
 
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"ImageMatched" object:self userInfo:userInfo];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"CloseRequest" object:self ];
 
 }
 
