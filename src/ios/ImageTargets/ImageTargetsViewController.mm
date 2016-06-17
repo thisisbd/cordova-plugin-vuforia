@@ -149,7 +149,6 @@
 
     [self doStopTrackers];
     NSLog(@"Vuforia Plugin :: button pressed!!!");
-    NSDictionary* userInfo = @{@"imageName": @"none"};
 
     [[NSNotificationCenter defaultCenter] postNotificationName:@"CloseRequest" object:self ];
 
