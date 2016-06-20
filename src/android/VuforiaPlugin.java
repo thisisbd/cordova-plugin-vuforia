@@ -49,13 +49,15 @@ public class VuforiaPlugin extends CordovaPlugin {
 
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
+        callback = callbackContext;
+
         if(action.equals("cordovaStartVuforia")) {
             ACTION = action;
             ARGS = args;
 
             String targetFile = args.getString(0);
             String targets = args.getJSONArray(1).toString();
-            String overlayText = args.getString(2);
+            String overlayText = (args.isNull(2)) ? null : args.getString(2);
             String vuforiaLicense = args.getString(3);
             Boolean closeButton = args.getBoolean(4);
             Boolean showDevicesIcon = args.getBoolean(5);
@@ -64,14 +66,13 @@ public class VuforiaPlugin extends CordovaPlugin {
             Log.d(LOGTAG, "Text: "+overlayText);
             Log.d(LOGTAG, "License: "+vuforiaLicense);
 
-            callback = callbackContext;
-
             Context context =  cordova.getActivity().getApplicationContext();
 
             Intent intent = new Intent(context, ImageTargets.class);
             intent.putExtra("IMAGE_TARGET_FILE", targetFile);
             intent.putExtra("IMAGE_TARGETS", targets);
-            intent.putExtra("OVERLAY_TEXT", overlayText);
+            if(overlayText != null)
+                intent.putExtra("OVERLAY_TEXT", overlayText);
             intent.putExtra("LICENSE_KEY", vuforiaLicense);
             intent.putExtra("DISPLAY_CLOSE_BUTTON", closeButton);
             intent.putExtra("DISPLAY_DEVICES_ICON", showDevicesIcon);
@@ -87,16 +88,27 @@ public class VuforiaPlugin extends CordovaPlugin {
             }
         }
         else if(action.equals("cordovaStopVuforia")) {
+            JSONObject json = new JSONObject();
+
             if(vuforiaStarted) {
-                Log.d(LOGTAG, "Cordova stopped");
+                Log.d(LOGTAG, "Stopping plugin");
+
+                json.put("success", "true");
+            }
+            else {
+                Log.d(LOGTAG, "Cannot stop the plugin because it wasn't started");
+                json.put("success", "false");
+                json.put("message", "No Vuforia session running");
+            }
+
+            callback.sendPluginResult(new PluginResult(PluginResult.Status.OK, json));
+
+            if(vuforiaStarted) {
                 Intent dismissIntent = new Intent(PLUGIN_ACTION);
                 dismissIntent.putExtra(PLUGIN_ACTION, DISMISS_ACTION);
 
                 this.cordova.getActivity().sendBroadcast(dismissIntent);
                 vuforiaStarted = false;
-            }
-            else {
-                Log.d(LOGTAG, "Cordova didn't stop because it didn't start");
             }
         }
 

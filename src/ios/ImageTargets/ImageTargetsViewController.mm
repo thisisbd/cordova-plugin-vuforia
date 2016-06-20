@@ -121,11 +121,11 @@
         [detailLabel sizeToFit];
 
         /* Reposition label based on height */
+        // Get the container height
+        int frameHeight = vuforiaBarView.frame.size.height;
         // Get the height of the label
         int labelHeight = detailLabel.frame.size.height;
 
-        // Get the container height
-        int frameHeight = vuforiaBarView.frame.size.height;
 
         // Create a new Y value for the label
         int labelY = (frameHeight / 2) - (labelHeight / 2);
@@ -134,8 +134,6 @@
         CGRect frameRect = detailLabel.frame;
         frameRect.origin.y = labelY;
 
-        // Set the label's frame
-        detailLabel.frame = frameRect;
 
         [vuforiaBarView addSubview:detailLabel];
 
@@ -153,9 +151,8 @@
 
     [self doStopTrackers];
     NSLog(@"Vuforia Plugin :: button pressed!!!");
-    NSDictionary* userInfo = @{@"imageName": @"none"};
 
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"ImageMatched" object:self userInfo:userInfo];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"CloseRequest" object:self ];
 
 }
 
