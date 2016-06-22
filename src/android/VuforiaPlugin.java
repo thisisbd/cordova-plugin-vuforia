@@ -61,6 +61,7 @@ public class VuforiaPlugin extends CordovaPlugin {
             String vuforiaLicense = args.getString(3);
             Boolean closeButton = args.getBoolean(4);
             Boolean showDevicesIcon = args.getBoolean(5);
+            Boolean stopAfterImageFound = args.getBoolean(6);
 
             Log.d(LOGTAG, "Args: "+args);
             Log.d(LOGTAG, "Text: "+overlayText);
@@ -76,6 +77,7 @@ public class VuforiaPlugin extends CordovaPlugin {
             intent.putExtra("LICENSE_KEY", vuforiaLicense);
             intent.putExtra("DISPLAY_CLOSE_BUTTON", closeButton);
             intent.putExtra("DISPLAY_DEVICES_ICON", showDevicesIcon);
+            intent.putExtra("STOP_AFTER_IMAGE_FOUND", stopAfterImageFound);
 
             if(cordova.hasPermission(CAMERA)) {
                 // Launch a new activity with Vuforia in it. Expect it to return a result.
