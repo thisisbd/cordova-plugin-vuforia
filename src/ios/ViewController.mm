@@ -1,6 +1,8 @@
 #import "ViewController.h"
 #import "ImageTargetsViewController.h"
 
+#import <QCAR/TrackerManager.h>
+#import <QCAR/ObjectTracker.h>
 
 @interface ViewController ()
 
@@ -49,6 +51,32 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (bool) doStartTrackers {
+    QCAR::TrackerManager& trackerManager = QCAR::TrackerManager::getInstance();
+    QCAR::Tracker* tracker = trackerManager.getTracker(QCAR::ObjectTracker::getClassType());
+    if(NULL == tracker) {
+        NSLog(@"ERROR: failed to get the tracker from the tracker manager");
+        return NO;
+    }
+
+    tracker->start();
+    NSLog(@"INFO: successfully started tracker");
+    return YES;
+}
+
+- (bool) doStopTrackers {
+    QCAR::TrackerManager& trackerManager = QCAR::TrackerManager::getInstance();
+    QCAR::Tracker* tracker = trackerManager.getTracker(QCAR::ObjectTracker::getClassType());
+    if(NULL == tracker) {
+        NSLog(@"ERROR: failed to get the tracker from the tracker manager");
+        return NO;
+    }
+    
+    tracker->stop();
+    NSLog(@"INFO: successfully stopped tracker");
+    return YES;
 }
 
 - (void)dismissMe {

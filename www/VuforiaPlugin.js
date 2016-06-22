@@ -81,6 +81,44 @@ var VuforiaPlugin = {
     );
   },
 
+  pauseVuforia: function(success, errorCallback){
+    cordova.exec(
+      // Register the callback handler
+      function callback(data) {
+        success(data);
+      },
+      // Register the error handler
+      function errorHandler(err) {
+        VuforiaPlugin.errorHandler(err, errorCallback);
+      },
+      // Define what class to route messages to
+      VuforiaPlugin.pluginClass,
+      // Execute this method on the above class
+      'pauseVuforia',
+      // Provide an empty array of arguments to the above method
+      []
+    );
+  },
+
+  resumeVuforia: function(success, errorCallback){
+    cordova.exec(
+      // Register the callback handler
+      function callback(data) {
+        success(data);
+      },
+      // Register the error handler
+      function errorHandler(err) {
+        VuforiaPlugin.errorHandler(err, errorCallback);
+      },
+      // Define what class to route messages to
+      VuforiaPlugin.pluginClass,
+      // Execute this method on the above class
+      'resumeVuforia',
+      // Provide an empty array of arguments to the above method
+      []
+    );
+  },
+
   /**
    * Handle an error from one of the plugin methods. If a callback is defined, an error message is passed to it. If not,
    * the error message is logged to the console.

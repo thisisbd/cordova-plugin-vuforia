@@ -29,6 +29,14 @@
     self.startedVuforia = true;
 }
 
+- (void) pauseVuforia:(CDVInvokedUrlCommand *)command{
+    [self.imageRecViewController doStopTrackers];
+}
+
+- (void) resumeVuforia:(CDVInvokedUrlCommand *)command{
+    [self.imageRecViewController doStartTrackers];
+}
+
 #pragma mark - Util_Methods
 - (void) startVuforiaWithImageTargetFile:(NSString *)imageTargetfile imageTargetNames:(NSArray *)imageTargetNames overlayOptions:(NSDictionary *)overlayOptions vuforiaLicenseKey:(NSString *)vuforiaLicenseKey {
 
