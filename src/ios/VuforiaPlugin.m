@@ -6,7 +6,7 @@
 @property CDVInvokedUrlCommand *command;
 @property ViewController *imageRecViewController;
 @property BOOL startedVuforia;
-@property BOOL stopAfterImageFound;
+@property BOOL autostopOnImageFound;
 
 @end
 
@@ -21,7 +21,7 @@
 
     NSDictionary *overlayOptions =  [[NSDictionary alloc] initWithObjectsAndKeys: [command.arguments objectAtIndex:2], @"overlayText", [NSNumber numberWithBool:[[command.arguments objectAtIndex:5] integerValue]], @"showDevicesIcon", nil];
 
-    self.stopAfterImageFound = [[command.arguments objectAtIndex:6] integerValue];
+    self.autostopOnImageFound = [[command.arguments objectAtIndex:6] integerValue];
 
     [self startVuforiaWithImageTargetFile:[command.arguments objectAtIndex:0] imageTargetNames: [command.arguments objectAtIndex:1] overlayOptions: overlayOptions vuforiaLicenseKey: [command.arguments objectAtIndex:3]];
     self.command = command;
@@ -62,11 +62,11 @@
 }
 
 - (void) pauseVuforia:(CDVInvokedUrlCommand *)command{
-    [self.imageRecViewController pause];
+    [self.imageRecViewController stopTrackers];
 }
 
 - (void) resumeVuforia:(CDVInvokedUrlCommand *)command{
-    [self.imageRecViewController resume];
+    [self.imageRecViewController startTrackers];
 }
 
 #pragma mark - Util_Methods
@@ -104,7 +104,7 @@
 
     [self.commandDelegate sendPluginResult:pluginResult callbackId:self.command.callbackId];
 
-    if(self.stopAfterImageFound){
+    if(self.autostopOnImageFound){
         [self VP_closeView];
     }
 

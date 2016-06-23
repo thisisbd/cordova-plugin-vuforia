@@ -34,9 +34,9 @@ var VuforiaPlugin = {
     var vuforiaLicense = options.vuforiaLicense;
     var showAndroidCloseButton = options.showAndroidCloseButton?true:false;
     var showDevicesIcon = options.showDevicesIcon ? true : false;
-    var stopAfterImageFound = true;
-    if (typeof options.stopAfterImageFound !== "undefined" && options.stopAfterImageFound !==null && !options.stopAfterImageFound)
-      stopAfterImageFound = false;
+    var autostopOnImageFound = true;
+    if (typeof options.autostopOnImageFound !== "undefined" && options.autostopOnImageFound !==null && !options.autostopOnImageFound)
+      autostopOnImageFound = false;
 
     cordova.exec(
       // Register the callback handler
@@ -52,7 +52,7 @@ var VuforiaPlugin = {
       // Execute this method on the above class
       'cordovaStartVuforia',
       // Provide an array of arguments above method
-      [ imageFile , imageTargets, overlayCopy, vuforiaLicense, showAndroidCloseButton, showDevicesIcon, stopAfterImageFound ]
+      [ imageFile , imageTargets, overlayCopy, vuforiaLicense, showAndroidCloseButton, showDevicesIcon, autostopOnImageFound ]
     );
   },
 

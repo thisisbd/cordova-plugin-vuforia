@@ -115,7 +115,7 @@ public class ImageTargets extends Activity implements ApplicationControl
     Boolean mDisplayDevicesIcon;
 
     // Stop the activity
-    Boolean mStopAfterImageFound;
+    Boolean mAutostopOnImageFound;
 
     // Vuforia license key
     String mLicenseKey;
@@ -175,7 +175,7 @@ public class ImageTargets extends Activity implements ApplicationControl
         mOverlayMessage = intent.getStringExtra("OVERLAY_TEXT");
         mDisplayCloseButton = intent.getBooleanExtra("DISPLAY_CLOSE_BUTTON", true);
         mDisplayDevicesIcon = intent.getBooleanExtra("DISPLAY_DEVICES_ICON", true);
-        mStopAfterImageFound = intent.getBooleanExtra("STOP_AFTER_IMAGE_FOUND", true);
+        mAutostopOnImageFound = intent.getBooleanExtra("STOP_AFTER_IMAGE_FOUND", true);
 
         startLoadingAnimation();
 
@@ -721,7 +721,6 @@ public class ImageTargets extends Activity implements ApplicationControl
     public void handleCloseButton(View view){
         onBackPressed();
     }
-<<<<<<< HEAD
 
     public void imageFound(String imageName){
         Context context =  this.getApplicationContext();
@@ -731,9 +730,7 @@ public class ImageTargets extends Activity implements ApplicationControl
 
         doStopTrackers();
 
-        if(mStopAfterImageFound)
+        if(mAutostopOnImageFound)
             this.finish();
     }
-=======
->>>>>>> master
 }

@@ -54,11 +54,11 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (bool) pause {
+- (bool) stopTrackers {
     return [self.imageTargetsViewController doStopTrackers];
 }
 
-- (bool) resume {
+- (bool) startTrackers {
     return [self.imageTargetsViewController doStartTrackers];
 }
 
