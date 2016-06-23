@@ -24,6 +24,8 @@ public class VuforiaPlugin extends CordovaPlugin {
     public static final String CAMERA = Manifest.permission.CAMERA;
     public static final String PLUGIN_ACTION = "org.cordova.plugin.vuforia.action";
     public static final String DISMISS_ACTION = "dismiss";
+    public static final String PAUSE_ACTION = "pause";
+    public static final String RESUME_ACTION = "resume";
 
     private static final int CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE = 200;
 
@@ -112,6 +114,27 @@ public class VuforiaPlugin extends CordovaPlugin {
                 this.cordova.getActivity().sendBroadcast(dismissIntent);
                 vuforiaStarted = false;
             }
+        }else if(action.equals("pauseVuforia")){
+            Log.d(LOGTAG, "Pausing trackers");
+
+            JSONObject json = new JSONObject();
+            json.put("success", "true");
+            callback.sendPluginResult(new PluginResult(PluginResult.Status.OK, json));
+
+            Intent pauseIntent = new Intent(PLUGIN_ACTION);
+            pauseIntent.putExtra(PLUGIN_ACTION, PAUSE_ACTION);
+            this.cordova.getActivity().sendBroadcast(pauseIntent);
+            
+        }else if(action.equals("resumeVuforia")){
+            Log.d(LOGTAG, "Resuming trackers");
+
+            JSONObject json = new JSONObject();
+            json.put("success", "true");
+            callback.sendPluginResult(new PluginResult(PluginResult.Status.OK, json));
+
+            Intent resumeIntent = new Intent(PLUGIN_ACTION);
+            resumeIntent.putExtra(PLUGIN_ACTION, RESUME_ACTION);
+            this.cordova.getActivity().sendBroadcast(resumeIntent);
         }
 
         return true;

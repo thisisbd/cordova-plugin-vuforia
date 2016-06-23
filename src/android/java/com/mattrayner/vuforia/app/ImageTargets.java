@@ -128,6 +128,10 @@ public class ImageTargets extends Activity implements ApplicationControl
 
             if (receivedAction.equals(VuforiaPlugin.DISMISS_ACTION)) {
                 onBackPressed();
+            }else if(receivedAction.equals(VuforiaPlugin.PAUSE_ACTION)){
+                doStopTrackers();
+            }else if(receivedAction.equals(VuforiaPlugin.RESUME_ACTION)){
+                doStartTrackers();
             }
         }
     }
