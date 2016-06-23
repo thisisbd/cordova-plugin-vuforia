@@ -30,11 +30,11 @@
 }
 
 - (void) pauseVuforia:(CDVInvokedUrlCommand *)command{
-    [self.imageRecViewController doStopTrackers];
+    [self.imageRecViewController pause];
 }
 
 - (void) resumeVuforia:(CDVInvokedUrlCommand *)command{
-    [self.imageRecViewController doStartTrackers];
+    [self.imageRecViewController resume];
 }
 
 #pragma mark - Util_Methods

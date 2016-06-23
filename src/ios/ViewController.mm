@@ -7,6 +7,7 @@
 @interface ViewController ()
 
 @property BOOL launchedCamera;
+@property ImageTargetsViewController *imageTargetsViewController;
 
 @end
 
@@ -38,13 +39,13 @@
     [super viewDidAppear:animated];
 
     if (self.launchedCamera == false) {
-        ImageTargetsViewController *vc = [[ImageTargetsViewController alloc]  initWithOverlayOptions:self.overlayOptions vuforiaLicenseKey:self.vuforiaLicenseKey];
+        self.imageTargetsViewController = [[ImageTargetsViewController alloc]  initWithOverlayOptions:self.overlayOptions vuforiaLicenseKey:self.vuforiaLicenseKey];
         self.launchedCamera = true;
 
-        vc.imageTargetFile = [self.imageTargets objectForKey:@"imageTargetFile"];
-        vc.imageTargetNames = [self.imageTargets objectForKey:@"imageTargetNames"];
+        self.imageTargetsViewController.imageTargetFile = [self.imageTargets objectForKey:@"imageTargetFile"];
+        self.imageTargetsViewController.imageTargetNames = [self.imageTargets objectForKey:@"imageTargetNames"];
 
-        [self.navigationController pushViewController:vc animated:YES];
+        [self.navigationController pushViewController:self.imageTargetsViewController animated:YES];
     }
 }
 
@@ -53,30 +54,12 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (bool) doStartTrackers {
-    QCAR::TrackerManager& trackerManager = QCAR::TrackerManager::getInstance();
-    QCAR::Tracker* tracker = trackerManager.getTracker(QCAR::ObjectTracker::getClassType());
-    if(NULL == tracker) {
-        NSLog(@"ERROR: failed to get the tracker from the tracker manager");
-        return NO;
-    }
-
-    tracker->start();
-    NSLog(@"INFO: successfully started tracker");
-    return YES;
+- (bool) pause {
+    return [self.imageTargetsViewController doStopTrackers];
 }
 
-- (bool) doStopTrackers {
-    QCAR::TrackerManager& trackerManager = QCAR::TrackerManager::getInstance();
-    QCAR::Tracker* tracker = trackerManager.getTracker(QCAR::ObjectTracker::getClassType());
-    if(NULL == tracker) {
-        NSLog(@"ERROR: failed to get the tracker from the tracker manager");
-        return NO;
-    }
-    
-    tracker->stop();
-    NSLog(@"INFO: successfully stopped tracker");
-    return YES;
+- (bool) resume {
+    return [self.imageTargetsViewController doStartTrackers];
 }
 
 - (void)dismissMe {
