@@ -29,6 +29,38 @@
     self.startedVuforia = true;
 }
 
+- (void) cordovaStopVuforia:(CDVInvokedUrlCommand *)command {
+    self.command = command;
+
+    NSDictionary *jsonObj = [NSDictionary alloc];
+
+    if(self.startedVuforia == true){
+        NSLog(@"Vuforia Plugin :: Stopping plugin");
+
+        jsonObj = [ [NSDictionary alloc] initWithObjectsAndKeys :
+                     @"true", @"success",
+                     nil
+                   ];
+    }else{
+        NSLog(@"Vuforia Plugin :: Cannot stop the plugin because it wasn't started");
+
+        jsonObj = [ [NSDictionary alloc] initWithObjectsAndKeys :
+                     @"false", @"success",
+                     @"No Vuforia session running", @"message",
+                     nil
+                   ];
+    }
+
+    CDVPluginResult *pluginResult = [ CDVPluginResult
+                                     resultWithStatus    : CDVCommandStatus_OK
+                                     messageAsDictionary : jsonObj
+                                    ];
+
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:self.command.callbackId];
+
+    [self VP_closeView];
+}
+
 - (void) pauseVuforia:(CDVInvokedUrlCommand *)command{
     [self.imageRecViewController pause];
 }
@@ -82,37 +114,6 @@
     [self VP_closeView];
 }
 
-- (void) cordovaStopVuforia:(CDVInvokedUrlCommand *)command {
-    self.command = command;
-
-    NSDictionary *jsonObj = [NSDictionary alloc];
-
-    if(self.startedVuforia == true){
-        NSLog(@"Vuforia Plugin :: Stopping plugin");
-
-        jsonObj = [ [NSDictionary alloc] initWithObjectsAndKeys :
-                     @"true", @"success",
-                     nil
-                   ];
-    }else{
-        NSLog(@"Vuforia Plugin :: Cannot stop the plugin because it wasn't started");
-
-        jsonObj = [ [NSDictionary alloc] initWithObjectsAndKeys :
-                     @"false", @"success",
-                     @"No Vuforia session running", @"message",
-                     nil
-                   ];
-    }
-
-    CDVPluginResult *pluginResult = [ CDVPluginResult
-                                     resultWithStatus    : CDVCommandStatus_OK
-                                     messageAsDictionary : jsonObj
-                                    ];
-
-    [self.commandDelegate sendPluginResult:pluginResult callbackId:self.command.callbackId];
-
-    [self VP_closeView];
-}
 
 
 - (void) VP_closeView {
