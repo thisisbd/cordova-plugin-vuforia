@@ -165,7 +165,7 @@ public class ImageTargets extends Activity implements ApplicationControl
         } catch(Exception e) {
             Intent mIntent = new Intent();
             mIntent.putExtra("name", "VUFORIA ERROR");
-            setResult(6, mIntent);
+            setResult(VuforiaPlugin.ERROR_RESULT, mIntent);
             finish();
         }
 
@@ -714,13 +714,14 @@ public class ImageTargets extends Activity implements ApplicationControl
     public void onBackPressed() {
         Intent mIntent = new Intent();
         mIntent.putExtra("name", "CLOSED");
-        setResult(6, mIntent);
+        setResult(VuforiaPlugin.MANUAL_CLOSE_RESULT, mIntent);
         super.onBackPressed();
     }
 
     public void handleCloseButton(View view){
         onBackPressed();
     }
+<<<<<<< HEAD
 
     public void imageFound(String imageName){
         Context context =  this.getApplicationContext();
@@ -733,4 +734,6 @@ public class ImageTargets extends Activity implements ApplicationControl
         if(mStopAfterImageFound)
             this.finish();
     }
+=======
+>>>>>>> master
 }
