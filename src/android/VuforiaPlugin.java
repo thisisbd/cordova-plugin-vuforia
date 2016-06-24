@@ -112,33 +112,19 @@ public class VuforiaPlugin extends CordovaPlugin {
             callback.sendPluginResult(new PluginResult(PluginResult.Status.OK, json));
 
             if(vuforiaStarted) {
-                Intent dismissIntent = new Intent(PLUGIN_ACTION);
-                dismissIntent.putExtra(PLUGIN_ACTION, DISMISS_ACTION);
-
-                this.cordova.getActivity().sendBroadcast(dismissIntent);
+                sendAction(DISMISS_ACTION);
                 vuforiaStarted = false;
             }
         }else if(action.equals("pauseVuforia")){
             Log.d(LOGTAG, "Pausing trackers");
-
-            JSONObject json = new JSONObject();
-            json.put("success", "true");
-            callback.sendPluginResult(new PluginResult(PluginResult.Status.OK, json));
-
-            Intent pauseIntent = new Intent(PLUGIN_ACTION);
-            pauseIntent.putExtra(PLUGIN_ACTION, PAUSE_ACTION);
-            this.cordova.getActivity().sendBroadcast(pauseIntent);
             
+            sendSuccessPluginResult();
+            sendAction(PAUSE_ACTION);
         }else if(action.equals("resumeVuforia")){
             Log.d(LOGTAG, "Resuming trackers");
 
-            JSONObject json = new JSONObject();
-            json.put("success", "true");
-            callback.sendPluginResult(new PluginResult(PluginResult.Status.OK, json));
-
-            Intent resumeIntent = new Intent(PLUGIN_ACTION);
-            resumeIntent.putExtra(PLUGIN_ACTION, RESUME_ACTION);
-            this.cordova.getActivity().sendBroadcast(resumeIntent);
+            sendSuccessPluginResult();
+            sendAction(RESUME_ACTION);
         }
 
         return true;
@@ -194,5 +180,22 @@ public class VuforiaPlugin extends CordovaPlugin {
             }
         }
         vuforiaStarted = false;
+    }
+
+    private void sendAction(String action){
+        Intent resumeIntent = new Intent(PLUGIN_ACTION);
+        resumeIntent.putExtra(PLUGIN_ACTION, action);
+        this.cordova.getActivity().sendBroadcast(resumeIntent);
+    }
+
+    private void sendSuccessPluginResult(){
+        try {
+            JSONObject json = new JSONObject();
+            json.put("success", "true");
+            callback.sendPluginResult(new PluginResult(PluginResult.Status.OK, json));
+        }
+        catch( JSONException e ) {
+            Log.d(LOGTAG, "JSON ERROR: " + e);
+        }
     }
 }
