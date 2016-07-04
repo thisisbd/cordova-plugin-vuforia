@@ -130,15 +130,13 @@
         // Get the height of the label
         int labelHeight = detailLabel.frame.size.height;
 
+        // Adjust the background bar and button height accordingly
+        CGRect buttonFrame = button.frame;
         if(detailLabel.frame.size.height > button.frame.size.height) {
             CGRect labelRect = vuforiaBarView.frame;
             labelRect.size.height = detailLabel.frame.size.height + 25;
             vuforiaBarView.frame = labelRect;
-        }
 
-        // Adjust the button accordingly
-        CGRect buttonFrame = button.frame;
-        if(detailLabel.frame.size.height > button.frame.size.height) {
             buttonFrame.origin.y = labelHeight / 3 - 4;
         }
         else {

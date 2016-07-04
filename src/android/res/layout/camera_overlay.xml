@@ -22,8 +22,9 @@
         <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
+                android:layout_marginLeft="8dp"
                 android:layout_marginRight="5dp"
+                android:paddingBottom="2dp"
                 android:layout_gravity="center_vertical|left"
                 android:id="@+id/devices_icon_top"
                 android:src="@drawable/devices"/>
@@ -33,7 +34,7 @@
                 android:layout_height= "wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:id="@+id/overlay_message_top"
-                android:gravity="center|left"
+                android:gravity="center_vertical|left"
                 android:text="Scan an image..."
                 android:textSize="14dp"
                 android:padding="10dp"
