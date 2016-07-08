@@ -45,7 +45,7 @@
         self.imageTargetsViewController.imageTargetFile = [self.imageTargets objectForKey:@"imageTargetFile"];
         self.imageTargetsViewController.imageTargetNames = [self.imageTargets objectForKey:@"imageTargetNames"];
 
-        [self.navigationController pushViewController:self.imageTargetsViewController animated:YES];
+        [self presentViewController:self.imageTargetsViewController animated:NO completion:nil];
     }
 }
 
@@ -64,6 +64,11 @@
 
 - (bool) updateTargets:(NSArray *)targets {
     return [self.imageTargetsViewController doUpdateTargets:targets];
+}
+
+- (void) close{
+    [self.imageTargetsViewController dismissViewControllerAnimated:NO completion:nil];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)dismissMe {
