@@ -75,4 +75,17 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:@"CameraHasFound" object:self];
 }
 
+- (BOOL)shouldAutorotate {
+    return [[self presentingViewController] shouldAutorotate];
+}
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations
+{
+    return [[self presentingViewController] supportedInterfaceOrientations];
+}
+
+- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation
+{
+    return [[self presentingViewController] preferredInterfaceOrientationForPresentation];
+}
+
 @end
