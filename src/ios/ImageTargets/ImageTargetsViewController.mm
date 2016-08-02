@@ -615,18 +615,17 @@
 
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
         if(!self.delaying){
-            //[self stopVuforia];
-            [vapp pauseAR:nil];
-
+            [self stopVuforia];
             [self showLoadingAnimation];
         }
     } completion:^(id<UIViewControllerTransitionCoordinatorContext> context) {
         if(!self.delaying) {
             self.delaying = true;
 
-
+            [self performSelector:@selector(startVuforia) withObject:nil afterDelay:1];
         }
 
+        NSLog(@"ROTATING THE SCREEN");
         CGRect mainBounds = [[UIScreen mainScreen] bounds];
 
         UIView *vuforiaBarView = (UIView *)[eaglView viewWithTag:8];
@@ -691,9 +690,8 @@
 
 - (void)stopVuforia
 {
-    //[vapp pauseAR:nil];
-
-    [vapp stopAR:nil];
+    [vapp pauseAR:nil];
+    // [vapp stopAR:nil];
     // Be a good OpenGL ES citizen: now that QCAR is paused and the render
     // thread is not executing, inform the root view controller that the
     // EAGLView should finish any OpenGL ES commands
