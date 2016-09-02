@@ -1,11 +1,14 @@
-     /*===============================================================================
-Copyright (c) 2012-2014 Qualcomm Connected Experiences, Inc. All Rights Reserved.
+/*===============================================================================
+Copyright (c) 2015-2016 PTC Inc. All Rights Reserved.
 
-Vuforia is a trademark of QUALCOMM Incorporated, registered in the United States
-and other countries. Trademarks of QUALCOMM Incorporated are used with permission.
-===============================================================================*/
+ Copyright (c) 2012-2015 Qualcomm Connected Experiences, Inc. All Rights Reserved.
+
+ Vuforia is a trademark of PTC Inc., registered in the United States and other
+ countries.
+ ===============================================================================*/
 
 #import "ApplicationSession.h"
+// #import "ApplicationUtils.h"
 #import <Vuforia/Vuforia.h>
 #import <Vuforia/Vuforia_iOS.h>
 #import <Vuforia/Tool.h>
@@ -13,6 +16,10 @@ and other countries. Trademarks of QUALCOMM Incorporated are used with permissio
 #import <Vuforia/CameraDevice.h>
 #import <Vuforia/VideoBackgroundConfig.h>
 #import <Vuforia/UpdateCallback.h>
+
+#import <UIKit/UIKit.h>
+
+#define DEBUG_APP 1
 
 namespace {
     // --- Data private to this unit ---
@@ -40,7 +47,6 @@ namespace {
 
 @interface ApplicationSession ()
 
-@property (nonatomic, readwrite) CGSize mARViewBoundsSize;
 @property (nonatomic, readwrite) UIInterfaceOrientation mARViewOrientation;
 @property (nonatomic, readwrite) BOOL mIsActivityInPortraitMode;
 @property (nonatomic, readwrite) BOOL cameraIsActive;
@@ -68,13 +74,6 @@ namespace {
     return self;
 }
 
-- (void)dealloc
-{
-    instance = nil;
-    [self setDelegate:nil];
-    [super dealloc];
-}
-
 // build a NSError
 - (NSError *) NSErrorWithCode:(int) code {
     return [NSError errorWithDomain:APPLICATION_ERROR_DOMAIN code:code userInfo:nil];
@@ -89,34 +88,30 @@ namespace {
                                  userInfo:userInfo];
 }
 
-- (void) NSErrorWithCode:(int) code error:(NSError **) error{
+- (NSError *) NSErrorWithCode:(int) code error:(NSError **) error{
     if (error != NULL) {
         *error = [self NSErrorWithCode:code];
+        return *error;
     }
+    return nil;
 }
 
 // Determine whether the device has a retina display
 - (BOOL)isRetinaDisplay
 {
     // If UIScreen mainScreen responds to selector
-    // displayLinkWithTarget:selector: and the scale property is 2.0, then this
+    // displayLinkWithTarget:selector: and the scale property is larger than 1.0, then this
     // is a retina display
-    return ([[UIScreen mainScreen] respondsToSelector:@selector(displayLinkWithTarget:selector:)] && 2.0 == [UIScreen mainScreen].scale);
+    return ([[UIScreen mainScreen] respondsToSelector:@selector(displayLinkWithTarget:selector:)] && 1.0 < [UIScreen mainScreen].scale);
 }
 
 // Initialize the Vuforia SDK
-- (void) initAR:(int) VuforiaInitFlags ARViewBoundsSize:(CGSize) ARViewBoundsSize orientation:(UIInterfaceOrientation) ARViewOrientation {
+- (void) initAR:(int) VuforiaInitFlags orientation:(UIInterfaceOrientation) ARViewOrientation {
     self.cameraIsActive = NO;
     self.cameraIsStarted = NO;
     mVuforiaInitFlags = VuforiaInitFlags;
     self.isRetinaDisplay = [self isRetinaDisplay];
     self.mARViewOrientation = ARViewOrientation;
-
-    // If this device has a retina display, we expect the view bounds to
-    // have been scaled up by a factor of 2; this allows it to calculate the size and position of
-    // the viewport correctly when rendering the video background
-    // The ARViewBoundsSize is the dimension of the AR view as seen in portrait, even if the orientation is landscape
-    self.mARViewBoundsSize = ARViewBoundsSize;
 
     // Initialising Vuforia is a potentially lengthy operation, so perform it on a
     // background thread
@@ -182,6 +177,10 @@ namespace {
                         error = [self NSErrorWithCode:NSLocalizedString(@"INIT_LICENSE_ERROR_MISSING_KEY", nil) code:initSuccess];
                         break;
 
+                    case Vuforia::INIT_LICENSE_ERROR_PRODUCT_TYPE_MISMATCH:
+                        error = [self NSErrorWithCode:NSLocalizedString(@"INIT_LICENSE_ERROR_PRODUCT_TYPE_MISMATCH", nil) code:initSuccess];
+                        break;
+
                     default:
                         error = [self NSErrorWithCode:NSLocalizedString(@"INIT_default", nil) code:initSuccess];
                         break;
@@ -194,6 +193,7 @@ namespace {
     }
 }
 
+
 // Prompts a dialog to warn the user that
 // the camera access was not granted to this App and
 // to provide instructions on how to restore it.
@@ -205,7 +205,6 @@ namespace {
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"iOS8 Camera Access Warning" message:message delegate:self cancelButtonTitle:@"Close" otherButtonTitles:nil, nil];
 
     [alert show];
-    [alert release];
 }
 
 // Quit App when user dismisses the camera access alert dialog
@@ -237,12 +236,6 @@ namespace {
         }
 
         self.cameraIsActive = YES;
-
-        // ask the application to start the tracker(s)
-        if(! [self.delegate doStartTrackers] ) {
-            [self NSErrorWithCode:-1 error:error];
-            return NO;
-        }
     }
     return YES;
 }
@@ -261,12 +254,6 @@ namespace {
             return NO;
         }
         self.cameraIsActive = NO;
-
-        // Stop the trackers
-        if(! [self.delegate doStopTrackers]) {
-            [self NSErrorWithCode:E_STOPPING_TRACKERS error:error];
-            return NO;
-        }
     }
     Vuforia::onPause();
     return YES;
@@ -278,13 +265,30 @@ namespace {
     }
 }
 
+- (CGSize)getCurrentARViewBoundsSize
+{
+    CGRect screenBounds = [[UIScreen mainScreen] bounds];
+    CGSize viewSize = screenBounds.size;
+
+    // If this device has a retina display, scale the view bounds
+    // for the AR (OpenGL) view
+    if (YES == self.isRetinaDisplay) {
+        viewSize.width *= [UIScreen mainScreen].nativeScale;
+        viewSize.height *= [UIScreen mainScreen].nativeScale;
+    }
+    return viewSize;
+}
+
 - (void) prepareAR  {
-    // we register for the callback
+    // we register for the Vuforia callback
     Vuforia::registerCallback(&vuforiaUpdate);
 
     // Tell Vuforia we've created a drawing surface
     Vuforia::onSurfaceCreated();
 
+    CGSize viewBoundsSize = [self getCurrentARViewBoundsSize];
+    int smallerSize = MIN(viewBoundsSize.width, viewBoundsSize.height);
+    int largerSize = MAX(viewBoundsSize.width, viewBoundsSize.height);
 
     // Frames from the camera are always landscape, no matter what the
     // orientation of the device.  Tell Vuforia to rotate the video background (and
@@ -292,33 +296,32 @@ namespace {
     // by the proper angle in order to match the EAGLView orientation
     if (self.mARViewOrientation == UIInterfaceOrientationPortrait)
     {
-        Vuforia::onSurfaceChanged(self.mARViewBoundsSize.width, self.mARViewBoundsSize.height);
+        Vuforia::onSurfaceChanged(smallerSize, largerSize);
         Vuforia::setRotation(Vuforia::ROTATE_IOS_90);
 
         self.mIsActivityInPortraitMode = YES;
     }
     else if (self.mARViewOrientation == UIInterfaceOrientationPortraitUpsideDown)
     {
-        Vuforia::onSurfaceChanged(self.mARViewBoundsSize.width, self.mARViewBoundsSize.height);
+        Vuforia::onSurfaceChanged(smallerSize, largerSize);
         Vuforia::setRotation(Vuforia::ROTATE_IOS_270);
 
         self.mIsActivityInPortraitMode = YES;
     }
     else if (self.mARViewOrientation == UIInterfaceOrientationLandscapeLeft)
     {
-        Vuforia::onSurfaceChanged(self.mARViewBoundsSize.height, self.mARViewBoundsSize.width);
+        Vuforia::onSurfaceChanged(largerSize, smallerSize);
         Vuforia::setRotation(Vuforia::ROTATE_IOS_180);
 
         self.mIsActivityInPortraitMode = NO;
     }
     else if (self.mARViewOrientation == UIInterfaceOrientationLandscapeRight)
     {
-        Vuforia::onSurfaceChanged(self.mARViewBoundsSize.height, self.mARViewBoundsSize.width);
-        Vuforia::setRotation(1);
+        Vuforia::onSurfaceChanged(largerSize, smallerSize);
+        Vuforia::setRotation(Vuforia::ROTATE_IOS_0);
 
         self.mIsActivityInPortraitMode = NO;
     }
-
 
     [self initTracker];
 }
@@ -337,7 +340,6 @@ namespace {
     // Loading tracker data is a potentially lengthy operation, so perform it on
     // a background thread
     [self performSelectorInBackground:@selector(loadTrackerDataInBackground) withObject:nil];
-
 }
 
 // *** Performed on a background thread ***
@@ -365,7 +367,6 @@ namespace {
     // Configure the video background
     Vuforia::VideoBackgroundConfig config;
     config.mEnabled = true;
-//    config.mSynchronous = true; // NOT SURE IF THIS IS NOW REDUNDANT
     config.mPosition.data[0] = 0.0f;
     config.mPosition.data[1] = 0.0f;
 
@@ -426,12 +427,20 @@ namespace {
             config.mSize.data[0] = (int)viewWidth;
             config.mSize.data[1] = (int)videoMode.mWidth * (viewWidth / (float)videoMode.mHeight);
         }
+
     }
     else {
         // --- View is landscape ---
-        float temp = viewWidth;
-        viewWidth = viewHeight;
-        viewHeight = temp;
+        if (viewWidth < viewHeight) {
+            // Swap width/height: this is neded on iOS7 and below
+            // as the view width is always reported as if in portrait.
+            // On IOS 8, the swap is not needed, because the size is
+            // orientation-dependent; so, this swap code in practice
+            // will only be executed on iOS 7 and below.
+            float temp = viewWidth;
+            viewWidth = viewHeight;
+            viewHeight = temp;
+        }
 
         // Compare aspect ratios of video and screen.  If they are different we
         // use the full screen size while maintaining the video's aspect ratio,
@@ -468,6 +477,7 @@ namespace {
             config.mSize.data[0] = (int)videoMode.mWidth * (viewHeight / (float)videoMode.mHeight);
             config.mSize.data[1] = (int)viewHeight;
         }
+
     }
 
     // Calculate the viewport for the app to use when rendering
@@ -487,6 +497,7 @@ namespace {
     Vuforia::Renderer::getInstance().setVideoBackgroundConfig(config);
 }
 
+
 // Start Vuforia camera with the specified view size
 - (bool)startCamera:(Vuforia::CameraDevice::CAMERA_DIRECTION)camera viewWidth:(float)viewWidth andHeight:(float)viewHeight error:(NSError **)error
 {
@@ -501,6 +512,9 @@ namespace {
         [self NSErrorWithCode:-1 error:error];
         return NO;
     }
+
+    // configure Vuforia video background
+    [self configureVideoBackgroundWithViewWidth:viewWidth andHeight:viewHeight];
 
     // start the camera
     if (!Vuforia::CameraDevice::getInstance().start()) {
@@ -518,21 +532,21 @@ namespace {
         return NO;
     }
 
-    // configure Vuforia video background
-    [self configureVideoBackgroundWithViewWidth:viewWidth andHeight:viewHeight];
-
     // Cache the projection matrix
     const Vuforia::CameraCalibration& cameraCalibration = Vuforia::CameraDevice::getInstance().getCameraCalibration();
     _projectionMatrix = Vuforia::Tool::getProjectionGL(cameraCalibration, 2.0f, 5000.0f);
+
     return YES;
 }
 
 
 - (bool) startAR:(Vuforia::CameraDevice::CAMERA_DIRECTION)camera error:(NSError **)error {
+    CGSize ARViewBoundsSize = [self getCurrentARViewBoundsSize];
+
     // Start the camera.  This causes Vuforia to locate our EAGLView in the view
     // hierarchy, start a render thread, and then call renderFrameVuforia on the
     // view periodically
-    if (! [self startCamera: camera viewWidth:self.mARViewBoundsSize.width andHeight:self.mARViewBoundsSize.height error:error]) {
+    if (! [self startCamera: camera viewWidth:ARViewBoundsSize.width andHeight:ARViewBoundsSize.height error:error]) {
         return NO;
     }
     self.cameraIsActive = YES;
@@ -606,7 +620,6 @@ namespace {
                                           cancelButtonTitle:@"OK"
                                           otherButtonTitles:nil];
     [alert show];
-    [alert release];
 }
 
 ////////////////////////////////////////////////////////////////////////////////

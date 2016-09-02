@@ -1,9 +1,11 @@
 /*===============================================================================
- Copyright (c) 2012-2014 Qualcomm Connected Experiences, Inc. All Rights Reserved.
+Copyright (c) 2016 PTC Inc. All Rights Reserved.
 
- Vuforia is a trademark of QUALCOMM Incorporated, registered in the United States
- and other countries. Trademarks of QUALCOMM Incorporated are used with permission.
- ===============================================================================*/
+Copyright (c) 2012-2015 Qualcomm Connected Experiences, Inc. All Rights Reserved.
+
+Vuforia is a trademark of PTC Inc., registered in the United States and other 
+countries.
+===============================================================================*/
 
 #import <QuartzCore/QuartzCore.h>
 #import <OpenGLES/ES2/gl.h>
@@ -72,7 +74,7 @@
         vapp = app;
         // Enable retina mode if available on this device
         if (YES == [vapp isRetinaDisplay]) {
-            [self setContentScaleFactor:2.0f];
+            [self setContentScaleFactor:[UIScreen mainScreen].nativeScale];
         }
 
         // Create the OpenGL ES context
