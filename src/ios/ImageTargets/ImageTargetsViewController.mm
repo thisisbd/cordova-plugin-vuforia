@@ -730,7 +730,8 @@
 }
 
 - (BOOL)shouldAutorotate {
-    return [[self presentingViewController] shouldAutorotate];
+    // return [[self presentingViewController] shouldAutorotate];
+    return NO; // Don't allow rotation while there are issues handling camera view after rotation.
 }
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations
 {
