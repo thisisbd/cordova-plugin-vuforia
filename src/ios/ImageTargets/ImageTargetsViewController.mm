@@ -226,7 +226,7 @@
     [vapp initAR:Vuforia::GL_20 orientation:orientation];
     // [vapp initAR:Vuforia::GL_20 ARViewBoundsSize:viewFrame.size orientation:orientation];
 
-    [self performSelector:@selector(test) withObject:nil afterDelay:.5];
+    [self performSelector:@selector(handleResumeComplete) withObject:nil afterDelay:.5];
 }
 
 
@@ -633,12 +633,8 @@
     bool showDevicesIcon = [[self.overlayOptions objectForKey:@"showDevicesIcon"] integerValue];
 
     UIView *vuforiaBarView = (UIView *)[eaglView viewWithTag:8];
-
     UIButton *closeButton = (UIButton *)[eaglView viewWithTag:10];
-    UIActivityIndicatorView *loadingIndicator = (UIActivityIndicatorView *)[eaglView viewWithTag:1];
-
     UILabel *detailLabel = (UILabel *)[eaglView viewWithTag:9];
-    UIActivityIndicatorView *labelLoadingIndicator = (UIActivityIndicatorView *)[eaglView viewWithTag:1];
 
     // handle close button location
     CGRect closeRect = closeButton.frame;
