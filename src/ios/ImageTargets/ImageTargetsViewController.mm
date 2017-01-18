@@ -223,9 +223,10 @@
     [self showLoadingAnimation];
 
     UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
-    [vapp initAR:Vuforia::GL_20 ARViewBoundsSize:viewFrame.size orientation:orientation];
+    [vapp initAR:Vuforia::GL_20 orientation:orientation];
+    // [vapp initAR:Vuforia::GL_20 ARViewBoundsSize:viewFrame.size orientation:orientation];
 
-    [self performSelector:@selector(test) withObject:nil afterDelay:.5];
+    [self performSelector:@selector(handleResumeComplete) withObject:nil afterDelay:.5];
 }
 
 
@@ -608,8 +609,6 @@
 {
     [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
 
-    bool showDevicesIcon = [[self.overlayOptions objectForKey:@"showDevicesIcon"] integerValue];
-
     // Code here will execute before the rotation begins.
     // Equivalent to placing it in the deprecated method -[willRotateToInterfaceOrientation:duration:]
 
@@ -617,76 +616,70 @@
         if(!self.delaying){
             //[self stopVuforia];
             [vapp pauseAR:nil];
-
             [self showLoadingAnimation];
         }
+
+        [self updateInterfaceLayout: size];
     } completion:^(id<UIViewControllerTransitionCoordinatorContext> context) {
         if(!self.delaying) {
             self.delaying = true;
-
-
         }
 
-        CGRect mainBounds = [[UIScreen mainScreen] bounds];
-
-        UIView *vuforiaBarView = (UIView *)[eaglView viewWithTag:8];
-
-        UIButton *closeButton = (UIButton *)[eaglView viewWithTag:10];
-        UIActivityIndicatorView *loadingIndicator = (UIActivityIndicatorView *)[eaglView viewWithTag:1];
-
-        UILabel *detailLabel = (UILabel *)[eaglView viewWithTag:9];
-        UIActivityIndicatorView *labelLoadingIndicator = (UIActivityIndicatorView *)[eaglView viewWithTag:1];
-
-        [UIView animateWithDuration:0.33 animations:^{
-
-            // handle close button location
-            CGRect closeRect = closeButton.frame;
-            closeRect.origin.x = [[UIScreen mainScreen] bounds].size.width - 65;
-            closeButton.frame = closeRect;
-
-            // if the device icon is to be shown, adapt the text to fit.
-            CGRect detailFrame = detailLabel.frame;
-            if(showDevicesIcon) {
-                detailFrame = CGRectMake(70, 10, [[UIScreen mainScreen] bounds].size.width - 130, detailLabel.frame.size.height);
-            }
-            else {
-                detailFrame = CGRectMake(20, 10, [[UIScreen mainScreen] bounds].size.width - 130, detailLabel.frame.size.height);
-            }
-            detailLabel.frame = detailFrame;
-            [detailLabel sizeToFit];
-            [vuforiaBarView addSubview:detailLabel];
-
-            CGRect vuforiaFrame = vuforiaBarView.frame;
-            vuforiaFrame.size.height = detailLabel.frame.size.height + 25;
-            vuforiaBarView.frame = vuforiaFrame;
-
-            if(detailLabel.frame.size.height > closeButton.frame.size.height) {
-                CGRect buttonFrame = closeButton.frame;
-                buttonFrame.origin.y = detailLabel.frame.size.height / 3.0;
-                closeButton.frame = buttonFrame;
-            }
-            else {
-                // handle close button location
-                CGRect closeRect = closeButton.frame;
-                closeRect.origin.y = 5;
-                closeButton.frame = closeRect;
-
-                // handle case where text is short
-                vuforiaFrame.size.height = 75;
-                vuforiaBarView.frame = vuforiaFrame;
-            }
-
-            // handle showDevicesIcon if it exists
-            if(showDevicesIcon) {
-                UIImageView *imageView = (UIImageView *)[eaglView viewWithTag:11];
-                CGRect imageFrame = imageView.frame;
-                imageFrame.origin.y = detailLabel.frame.size.height / 3.0;
-                imageView.frame = imageFrame;
-            }
-        }];
-
-
+        [self startVuforia];
     }];
+}
+
+- (void) updateInterfaceLayout:(CGSize)newScreenSize {
+    bool showDevicesIcon = [[self.overlayOptions objectForKey:@"showDevicesIcon"] integerValue];
+
+    UIView *vuforiaBarView = (UIView *)[eaglView viewWithTag:8];
+    UIButton *closeButton = (UIButton *)[eaglView viewWithTag:10];
+    UILabel *detailLabel = (UILabel *)[eaglView viewWithTag:9];
+
+    // handle close button location
+    CGRect closeRect = closeButton.frame;
+    closeRect.origin.x = newScreenSize.width - 65;
+    closeButton.frame = closeRect;
+
+    // if the device icon is to be shown, adapt the text to fit.
+    CGRect detailFrame = detailLabel.frame;
+    if(showDevicesIcon) {
+        detailFrame = CGRectMake(70, 10, newScreenSize.width - 130, detailLabel.frame.size.height);
+    }
+    else {
+        detailFrame = CGRectMake(20, 10, newScreenSize.width - 130, detailLabel.frame.size.height);
+    }
+    detailLabel.frame = detailFrame;
+    [detailLabel sizeToFit];
+    [vuforiaBarView addSubview:detailLabel];
+
+    CGRect vuforiaFrame = vuforiaBarView.frame;
+    vuforiaFrame.size.height = detailLabel.frame.size.height + 25;
+    vuforiaBarView.frame = vuforiaFrame;
+
+    if(detailLabel.frame.size.height > closeButton.frame.size.height) {
+        CGRect buttonFrame = closeButton.frame;
+        buttonFrame.origin.y = detailLabel.frame.size.height / 3.0;
+        closeButton.frame = buttonFrame;
+    }
+    else {
+        // handle close button location
+        CGRect closeRect = closeButton.frame;
+        closeRect.origin.y = 5;
+        closeButton.frame = closeRect;
+
+        // handle case where text is short
+        vuforiaFrame.size.height = 75;
+        vuforiaBarView.frame = vuforiaFrame;
+    }
+
+    // handle showDevicesIcon if it exists
+    if(showDevicesIcon) {
+        UIImageView *imageView = (UIImageView *)[eaglView viewWithTag:11];
+        CGRect imageFrame = imageView.frame;
+        imageFrame.origin.y = detailLabel.frame.size.height / 3.0;
+        imageView.frame = imageFrame;
+    }
 }
 
 - (void)stopVuforia
@@ -729,16 +722,16 @@
         Vuforia::setRotation(1);
     }
 
-
     // initialize the AR session
     //[vapp initAR:Vuforia::GL_20 ARViewBoundsSize:viewFrame.size orientation:orientation];
     [vapp resumeAR:nil];
 
-    [self performSelector:@selector(test) withObject:nil afterDelay:.5];
+    [self performSelector:@selector(handleResumeComplete) withObject:nil afterDelay:.5];
 }
 
 - (BOOL)shouldAutorotate {
-    return [[self presentingViewController] shouldAutorotate];
+    // return [[self presentingViewController] shouldAutorotate];
+    return NO; // Don't allow rotation while there are issues handling camera view after rotation.
 }
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations
 {
@@ -750,10 +743,8 @@
     return [[self presentingViewController] preferredInterfaceOrientationForPresentation];
 }
 
--(void)test
-{
+-(void)handleResumeComplete {
     self.delaying = false;
-
     [self hideLoadingAnimation];
 }
 
@@ -763,7 +754,6 @@
 
 -(bool) doUpdateTargets:(NSArray *)targets {
     self.imageTargetNames = targets;
-
     return TRUE;
 }
 @end
